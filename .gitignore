@@ -1,0 +1,4 @@
+.vscode
+.pycache
+crawler/__pycache__/
+db.sqlite3
