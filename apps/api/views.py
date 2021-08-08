@@ -2,9 +2,9 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated,AllowAny
-
 from apps.userprofile.models import Profile
 from .serializers import UserRegistrationSerializer, ProfileRegistrationSerializer
+from .utilities import text_extractor, download_file
 
 
 @api_view(['POST'])
@@ -52,6 +52,17 @@ def getuser_view(request):
     except Profile.DoesNotExist:
         pass
     resp= Response(data)
+    return resp
+
+@api_view(['GET'])
+@permission_classes([AllowAny])
+def pdfcrawl_view(request):
+    pdfurl= 'https://www.treasury.gov/ofac/downloads/mbs/mbslist.pdf'
+    pdfFile= download_file(pdfurl)
+    pdfText= text_extractor(pdfFile= pdfFile)
+    data = { 'pdfData':  pdfText}
+    pdfText= pdfText.replace('\n', '<br>')
+    resp= Response(pdfText)
     return resp
 
     
