@@ -11,8 +11,10 @@ def registration_view(request):
     data, include= {}, ['username', 'email', 'phoneNumber', 'baseLocation', 'jobDescription', 'age']
     u, p= usrSerializer.is_valid(), proSerializer.is_valid()
     if u and p :
-        user= usrSerializer.save()
-        user.set_password(user.password)
+        user= usrSerializer.create(usrSerializer.validated_data)
+        #validated_data= usrSerializer.validate()
+        user.set_password(usrSerializer.validated_data['password'])
+        user.save()
         profile= proSerializer.save(user= user)
         profile.save()
         for key, value in user.__dict__.items():
