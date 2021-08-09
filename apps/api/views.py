@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from apps.userprofile.models import Profile
 from .serializers import UserRegistrationSerializer, ProfileRegistrationSerializer
-from .utilities import text_extractor, download_file
+from .utilities import text_extractor, download_file, crawler
 
 
 @api_view(['POST'])
@@ -59,10 +59,14 @@ def getuser_view(request):
 def pdfcrawl_view(request):
     pdfurl= 'https://www.treasury.gov/ofac/downloads/mbs/mbslist.pdf'
     pdfFile= download_file(pdfurl)
-    pdfText= text_extractor(pdfFile= pdfFile)
-    data = { 'pdfData':  pdfText}
+    pdfData= text_extractor(pdfFile= pdfFile)
+    pdfText= pdfData[0]
+    urlList= pdfData[1]
+    print(urlList)
+    crawledList= crawler(urlList)
     pdfText= pdfText.replace('\n', '<br>')
-    resp= Response(pdfText)
+    data = {'crawledList':crawledList, 'pdfData':  pdfText}
+    resp= Response(data)
     return resp
 
     
