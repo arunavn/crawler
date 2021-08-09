@@ -14,6 +14,7 @@ urlpatterns = [
     path( 'register',  registration_view, name= 'register' ),
     path('signin', views.obtain_auth_token),
     path('userdetails', getuser_view),
-    path('pdfcrawl', pdfcrawl_view)   
+    path('pdfcrawl', pdfcrawl_view),   
+    path('pdfcrawl/<crawlLevel>', pdfcrawl_view)   
     
 ]

@@ -69,7 +69,7 @@ def extract_urls(searchUrl):
     return url_list
 
 def crawler( startUrlList, crawlLevel= 1 ):
-    final_list= [{ 'level': 0, 'source': 'entry', 'url': su } for su in startUrlList  ]
+    final_list= [{ 'level': 0, 'source': 0, 'url': su } for su in startUrlList  ]
     url_list, next_list= list(startUrlList), []
     for i in range(0,crawlLevel):
         for u in url_list:

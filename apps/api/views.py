@@ -56,14 +56,14 @@ def getuser_view(request):
 
 @api_view(['GET'])
 @permission_classes([AllowAny])
-def pdfcrawl_view(request):
+def pdfcrawl_view(request, crawlLevel= '1'):
     pdfurl= 'https://www.treasury.gov/ofac/downloads/mbs/mbslist.pdf'
     pdfFile= download_file(pdfurl)
     pdfData= text_extractor(pdfFile= pdfFile)
     pdfText= pdfData[0]
     urlList= pdfData[1]
     print(urlList)
-    crawledList= crawler(urlList)
+    crawledList= crawler(urlList, int(crawlLevel))
     pdfText= pdfText.replace('\n', '<br>')
     data = {'crawledList':crawledList, 'pdfData':  pdfText}
     resp= Response(data)
