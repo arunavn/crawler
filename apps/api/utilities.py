@@ -3,7 +3,11 @@ import requests
 import pdfplumber
 import re
 from bs4 import BeautifulSoup
-import math
+from selenium import webdriver
+from selenium.webdriver.support.select import Select
+import os
+import pandas as pd
+import numpy as np
 
 def download_file(url):
     local_filename = url.split('/')[-1]
@@ -81,3 +85,56 @@ def crawler( startUrlList, crawlLevel= 1 ):
                     next_list.append(nurl)
         url_list= list(next_list)
     return final_list
+
+
+def fill_web_form(url, in_dict, searchbuttonText= 'Search'):
+    os.environ['MOZ_HEADLESS'] = '1'
+    driver = webdriver.Firefox()
+    driver.get(url)
+    for k, v in in_dict.items():
+        ele= driver.find_element_by_id(k)
+        if ele.tag_name == 'input':
+            driver.execute_script("document.getElementById('{0}').value = '{1}';".format(k, v))
+        elif ele.tag_name == 'select' :
+            v_list, sel = [], Select(ele)
+            if v != '' and v is not None:
+                try:
+                    sel.deselect_all()
+                except:
+                    pass
+                if not isinstance(v, list):
+                    v_list= [v]
+                else:
+                    v_list= list(v)
+                for i in v_list:
+                    try:
+                        sel.select_by_visible_text(i)
+                    except:
+                        pass
+    btn= driver.find_element_by_xpath('//*[@id="ctl00_MainContent_btnSearch"]')
+    btn.click()
+    return driver.page_source
+def extract_result_table(pageSource, url, tableID= 'Name'):
+    try:
+        table_data= pd.read_html(pageSource, attrs= {'id': 'gvSearchResults'})[0]
+        table_data= table_data.replace(np.nan, '', regex= True )
+        table_head= pd.read_html(pageSource, attrs= {'id': 'resultsHeaderTable'})[0]
+        table_head, table_data= table_head.values, table_data.values
+        output=[]
+        for r in table_data:
+            out_dict={}
+            for i, d in enumerate(r):
+                if d==np.nan:
+                    d= ''
+                out_dict[table_head[0][i]] = d
+            output.append(out_dict)
+    except:
+        output= [{'error': 'no data found for given filters'}]
+    soup = BeautifulSoup(pageSource, 'html.parser')
+    url_list=[]
+    for link in soup.find_all('a', attrs={'href': re.compile("^https://")}):
+            url_list.append((link.get('href')))
+    for link in soup.find_all('a', attrs={'href': re.compile("^Details.aspx")}):
+        url_list.append(url + '/' + (link.get('href')))
+    return [output, url_list]
+

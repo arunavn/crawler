@@ -4,7 +4,8 @@ from rest_framework.authtoken import views
 from .views import (
     getuser_view,
     pdfcrawl_view,
-    registration_view
+    registration_view,
+    webcrawl_view
 )
 
 
@@ -15,6 +16,7 @@ urlpatterns = [
     path('signin', views.obtain_auth_token),
     path('userdetails', getuser_view),
     path('pdfcrawl', pdfcrawl_view),   
-    path('pdfcrawl/<crawlLevel>', pdfcrawl_view)   
+    path('pdfcrawl/<crawlLevel>', pdfcrawl_view),
+    path('webcrawl', webcrawl_view),   
     
 ]

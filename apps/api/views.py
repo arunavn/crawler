@@ -1,10 +1,10 @@
-from rest_framework import status
+from rest_framework import serializers, status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated,AllowAny
 from apps.userprofile.models import Profile
-from .serializers import UserRegistrationSerializer, ProfileRegistrationSerializer
-from .utilities import text_extractor, download_file, crawler
+from .serializers import UserRegistrationSerializer, ProfileRegistrationSerializer, WebSerializer
+from .utilities import text_extractor, download_file, crawler, fill_web_form, extract_result_table   
 
 
 @api_view(['POST'])
@@ -62,10 +62,22 @@ def pdfcrawl_view(request, crawlLevel= '1'):
     pdfData= text_extractor(pdfFile= pdfFile)
     pdfText= pdfData[0]
     urlList= pdfData[1]
-    print(urlList)
     crawledList= crawler(urlList, int(crawlLevel))
     pdfText= pdfText.replace('\n', '<br>')
     data = {'crawledList':crawledList, 'pdfData':  pdfText}
+    resp= Response(data)
+    return resp
+
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def webcrawl_view(request):
+    weburl= 'https://sanctionssearch.ofac.treas.gov/'
+    serializer =  WebSerializer(request.data)
+    pageData= fill_web_form(weburl, serializer.data)
+    extracted_data= extract_result_table(pageData, weburl) 
+    scraped_data= extracted_data[0]
+    urlList= extracted_data[1]
+    data = {'scrapedData':  scraped_data, 'crawledList':urlList}
     resp= Response(data)
     return resp
 
