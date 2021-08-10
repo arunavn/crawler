@@ -3,3 +3,4 @@
 crawler/__pycache__/
 db.sqlite3
 mbslist.pdf
+env.list

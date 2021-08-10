@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-8jy$m^g0ot$=x%)zikh!u2v_mm5!1y*v#*-p45^2sf-e_uqxzo
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -94,8 +94,8 @@ DATABASES = {
         'NAME': os.getenv('CRAWL_DB_NAME' , 'crawler_db'),
         'USER': os.getenv('CRAWL_DB_USERNAME' , 'postgres'),
         'PASSWORD':  os.getenv('CRAWL_DB_PASSWORD' , 'hello'),
-        'HOST': os.getenv('CRAWL_DB_USERNAME' , '13.233.106.104'),
-        'PORT': os.getenv('CRAWL_DB_USERNAME' , '5432'),
+        'HOST': os.getenv('CRAWL_DB_HOST' , '13.233.106.104'),
+        'PORT': int(os.getenv('CRAWL_DB_PORT' , '5432')),
     }
 }
 
