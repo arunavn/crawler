@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -91,11 +91,11 @@ DATABASES = {
     'default': {
  
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'crawler_db',
-        'USER': 'postgres',
-        'PASSWORD': 'hello',
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'NAME': os.getenv('CRAWL_DB_NAME' , 'crawler_db'),
+        'USER': os.getenv('CRAWL_DB_USERNAME' , 'postgres'),
+        'PASSWORD':  os.getenv('CRAWL_DB_PASSWORD' , 'hello'),
+        'HOST': os.getenv('CRAWL_DB_USERNAME' , '13.233.106.104'),
+        'PORT': os.getenv('CRAWL_DB_USERNAME' , '5432'),
     }
 }
 
