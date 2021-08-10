@@ -7,5 +7,8 @@ COPY ./manage.py ./manage.py
 WORKDIR /etc/app
 COPY requirements.txt .
 RUN pip install -r requirements.txt
-ENTRYPOINT [ "python3" ]
-CMD [ "manage.py", "runserver" ]
+RUN python3 manage.py makemigrations
+RUN python3 manage.py migrate
+EXPOSE  8000
+ENTRYPOINT [ "gunicorn" ]
+CMD [ "--bind 0.0.0.0:8000", "crawler.wsgi" ]
