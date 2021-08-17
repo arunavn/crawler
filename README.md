@@ -13,7 +13,7 @@
     </table>
     <span>
     </br>The app can be tested on the following host: </br>
-    <a href= http://15.206.122.190:8000/ >http://13.235.244.233:8000/</a>
+    <a href= http://15.206.122.190:8000/ > http://15.206.122.190:8000/</a>
     </span>
     <span>
     </br>The postman collection link also mentioned below for all sample requests to above mentioned endpoints and can be imported: </br>
